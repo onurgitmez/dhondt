@@ -24,15 +24,17 @@ library(dhondt)
 
 ## Simulate an election:
 
-  Assuming 'data' is your dataframe, 'district' is your district column,
- 
- 'seats' is your seats column, and 'party1', 'party2' are your party columns.
-
- The argument threshold = 0.1 represents the national threshold.
-
- The resulting dataframe can optionally be assigned to a variable 'election_results' in the global environment.
 
 ```r 
+
+# Assuming 'data' is your dataframe that includes the following:
+# 'district' - the column with electoral district names
+# 'seats' - the column with the number of seats available in each district
+# 'party1', 'party2' - columns with the number of votes each party received in each district
+
+# The 'threshold' argument specifies the national threshold required for a party to be eligible for seats. 
+# The resulting dataframe can optionally be assigned to a global environment variable, 'election_results'.
+
 
 election_results <- simulate_election(data, "district", "seats", c("party1", "party2"), threshold = 0.1, assign_to_env = TRUE, env_var_name = "election_results")
 
@@ -74,6 +76,31 @@ A list where the first item is a named vector with the total seats for each part
 - Computes the number of seats each party won in the election, given a dataframe with election data and parameters.
 - The resulting dataframe can optionally be assigned to a variable in the global environment.
 
+## Example Dataset
+
+The example dataset used in this package contains election data with various political parties and their corresponding votes in different districts. The columns are as follows:
+
+- `DistrictName`: The name of the electoral district.
+- `RefahVote`, `AkpVote`, `HdpVote`, `IyipVote`, `ZaferVote`, `ChpVote`, `MhpVote`, `TipVote`, `MemleketVote`, `BbpVote`: The number of votes received by each political party in the respective district.
+- `NumberofSeats`: The total number of seats available in each district.
+
+You can find this dataset in the `data` folder of this repository as `example_election_data.xlsx`. You can use this dataset to test the functionality of the `dhondt` package. Here's how you can load this data into R:
+
+```r
+# Install the readxl package if you haven't already
+install.packages("readxl")
+
+# Load the readxl package
+library(readxl)
+
+# Read the example dataset
+data <- read_excel("./data/example_election_data.xlsx")
+
+# View the first few rows of the data
+head(data)
+
+```
+
 ## Contributing
 
 Any contributions you make are greatly appreciated.
@@ -86,4 +113,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 **Ali Onur Gitmez**
 
+- Email: alionur [at] gitmez [dot] com
 - Project link: https://github.com/onurgitmez/dhondt
