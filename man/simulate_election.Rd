@@ -30,7 +30,9 @@ it computes the number of seats each party won in the election.
 }
 \examples{
 \dontrun{
-# and 'party1', 'party2' are your party columns
+# Assuming 'data' is your dataframe, 'district' is your district column,
+# 'seats' is your seats column, and 'party1', 'party2' are your party columns
+# The last argument 0.1 represents the national threshold.
 simulate_election(data, "district", "seats", c("party1", "party2"), 0.1)
 }
 }

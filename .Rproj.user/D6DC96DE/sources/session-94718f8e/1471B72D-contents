@@ -1,5 +1,0 @@
-library(foreign)
-df <- read_xlsx("/Users/alionurgitmez/Desktop/Desktop - MacBook Pro/Sabanci-Spring 2023-2/POLS 537/POLS537 DataProject/537Analiz2018.xlsx")
-
-
-simulate_election(df, "SecimCevresi", "VekilSayisi", c("AKP", "MHP", "CHP", "HDP", "IYIP"), threshold = 0.05)
