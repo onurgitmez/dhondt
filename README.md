@@ -37,7 +37,7 @@ library(dhondt)
 
 ```r 
 
-# Assuming 'data' is your dataframe that includes the following:
+# 'data' - your dataframe that includes the following:
 # 'district' - the column with electoral district names
 # 'seats' - the column with the number of seats available in each district
 # 'party1', 'party2' - columns with the number of votes each party received in each district
@@ -116,11 +116,20 @@ assign("new_dataset_name", get("election_data", envir = data(package = "dhondt")
 
 # This will load the dataset under the new name new_dataset_name.
 
-
-
 # View the first few rows of the data
 head(election_data)
 ```
+
+If you are using the dataset shipped with the package an example usage will be like this:
+
+```r
+
+# In this case, AKP's, MHP's, CHP's, IYIP's, and HDP's vote shares are used to calculate the seat distribution without an electoral threshold. The results aren't saved to the environment.
+
+simulate_election(election_data, "DistrictName", "NumberofSeats", c("AkpVote", "MhpVote", "ChpVote", "IyipVote", "HdpVote"), threshold = 0, assign_to_env = FALSE)
+```
+
+
 
 ## Contributing
 
