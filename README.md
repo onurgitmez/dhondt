@@ -4,7 +4,17 @@ This package, `dhondt`, provides an easy-to-use and powerful simulation tool to 
 
 ## Installation
 
-You can install this package directly from GitHub with the `devtools` package in R:
+You can install this package directly from GitHub. First, you'll need to install the `devtools` package in R, if you haven't already:
+
+
+```r
+
+install.packages("devtools")
+
+```
+
+Then, you can use devtools to install the dhondt package:
+
 
 ```r
 
@@ -78,27 +88,38 @@ A list where the first item is a named vector with the total seats for each part
 
 ## Example Dataset
 
-The example dataset used in this package contains election data with various political parties and their corresponding votes in different districts. The columns are as follows:
+The example dataset used in this package, `election_data`, contains election data with various political parties and their corresponding votes in different districts. The columns are as follows:
 
 - `DistrictName`: The name of the electoral district.
-- `RefahVote`, `AkpVote`, `HdpVote`, `IyipVote`, `ZaferVote`, `ChpVote`, `MhpVote`, `TipVote`, `MemleketVote`, `BbpVote`: The number of votes received by each political party in the respective district.
+- `RefahVote`: The number of votes received by the Refah Party in the respective district.
+- `AkpVote`: The number of votes received by the AKP in the respective district.
+- `HdpVote`: The number of votes received by the HDP in the respective district.
+- `IyipVote`: The number of votes received by the IYIP in the respective district.
+- `ZaferVote`: The number of votes received by the Zafer Party in the respective district.
+- `ChpVote`: The number of votes received by the CHP in the respective district.
+- `MhpVote`: The number of votes received by the MHP in the respective district.
+- `TipVote`: The number of votes received by the TIP in the respective district.
+- `MemleketVote`: The number of votes received by the Memleket Party in the respective district.
+- `BbpVote`: The number of votes received by the BBP in the respective district.
 - `NumberofSeats`: The total number of seats available in each district.
 
-You can find this dataset in the `data` folder of this repository as `example_election_data.xlsx`. You can use this dataset to test the functionality of the `dhondt` package. Here's how you can load this data into R:
+You can load this dataset into R using:
+
 
 ```r
-# Install the readxl package if you haven't already
-install.packages("readxl")
+# Load the dataset
+data("election_data", package = "dhondt")
 
-# Load the readxl package
-library(readxl)
+# Note: Loading data using the data() function will overwrite any existing objects with the same name in the global environment. If you want to avoid potential conflicts, you can load the dataset with a different name like so:
 
-# Read the example dataset
-data <- read_excel("./data/example_election_data.xlsx")
+assign("new_dataset_name", get("election_data", envir = data(package = "dhondt")))
+
+# This will load the dataset under the new name new_dataset_name.
+
+
 
 # View the first few rows of the data
-head(data)
-
+head(election_data)
 ```
 
 ## Contributing

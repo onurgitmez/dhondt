@@ -1,0 +1,2 @@
+load("/Users/alionurgitmez/Desktop/Rdhondt/dhondt/data/election_data.rda")
+load("/Users/alionurgitmez/Desktop/Rdhondt/dhondt/data/df.rda")
