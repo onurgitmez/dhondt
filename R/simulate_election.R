@@ -86,7 +86,7 @@ simulate_election <- function(df, district_col, seats_col, parties, threshold = 
     results[[party]] <- total_seats[[paste0(party, '_seats')]]
   }
 
-  # Assign the df_with_seats dataframe to a variable in the global environment if desired
+
   if (assign_to_env) {
     assign(env_var_name, df_with_seats, envir = .GlobalEnv)
   }
