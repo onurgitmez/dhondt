@@ -24,13 +24,13 @@ library(dhondt)
 
 ## Simulate an election:
 
- ### Assuming 'data' is your dataframe, 'district' is your district column,
+  Assuming 'data' is your dataframe, 'district' is your district column,
  
-###  'seats' is your seats column, and 'party1', 'party2' are your party columns.
+ 'seats' is your seats column, and 'party1', 'party2' are your party columns.
 
-### The argument threshold = 0.1 represents the national threshold.
+ The argument threshold = 0.1 represents the national threshold.
 
-### The resulting dataframe can optionally be assigned to a variable 'election_results' in the global environment.
+ The resulting dataframe can optionally be assigned to a variable 'election_results' in the global environment.
 
 ```r 
 
