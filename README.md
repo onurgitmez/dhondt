@@ -6,17 +6,21 @@ This package, `dhondt`, provides an easy-to-use and powerful simulation tool to 
 
 You can install this package directly from GitHub with the `devtools` package in R:
 
-\```r
+```r
+
 devtools::install_github("onurgitmez/dhondt")
-\```
+
+```
 
 ## Usage
 
 Load the `dhondt` package:
 
-\```r
+```r
+
 library(dhondt)
-\```
+
+```
 
 Simulate an election:
 
@@ -25,9 +29,11 @@ Simulate an election:
  The argument threshold = 0.1 represents the national threshold.
  The resulting dataframe can optionally be assigned to a variable 'election_results' in the global environment.
 
-\```r 
+```r 
+
 election_results <- simulate_election(data, "district", "seats", c("party1", "party2"), threshold = 0.1, assign_to_env = TRUE, env_var_name = "election_results")
-\```
+
+```
 
 ## Functions
 
@@ -39,9 +45,11 @@ This function simulates an election using the D'Hondt method.
 
 **Usage:**
 
-\```r
+```r
+
 simulate_election(df, district_col, seats_col, parties, threshold = 0, assign_to_env = FALSE, env_var_name = "df_with_seats")
-\```
+
+```
 
 **Arguments:**
 
