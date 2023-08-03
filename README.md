@@ -22,12 +22,15 @@ library(dhondt)
 
 ```
 
-Simulate an election:
+## Simulate an election:
 
- Assuming 'data' is your dataframe, 'district' is your district column,
- 'seats' is your seats column, and 'party1', 'party2' are your party columns.
- The argument threshold = 0.1 represents the national threshold.
- The resulting dataframe can optionally be assigned to a variable 'election_results' in the global environment.
+ ### Assuming 'data' is your dataframe, 'district' is your district column,
+ 
+###  'seats' is your seats column, and 'party1', 'party2' are your party columns.
+
+### The argument threshold = 0.1 represents the national threshold.
+
+### The resulting dataframe can optionally be assigned to a variable 'election_results' in the global environment.
 
 ```r 
 
@@ -41,7 +44,7 @@ The `dhondt` package currently has one main function, `simulate_election`.
 
 ### simulate_election()
 
-This function simulates an election using the D'Hondt method.
+**This function simulates an election using the D'Hondt method.**
 
 **Usage:**
 
