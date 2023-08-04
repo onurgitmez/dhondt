@@ -110,12 +110,6 @@ You can load this dataset into R using:
 # Load the dataset
 data("election_data", package = "dhondt")
 
-# Note: Loading data using the data() function will overwrite any existing objects with the same name in the global environment. If you want to avoid potential conflicts, you can load the dataset with a different name like so:
-
-assign("new_dataset_name", get("election_data", envir = data(package = "dhondt")))
-
-# This will load the dataset under the new name new_dataset_name.
-
 # View the first few rows of the data
 head(election_data)
 ```
