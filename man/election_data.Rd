@@ -40,7 +40,7 @@ assign("new_dataset_name", get("election_data", envir = data(package = "dhondt")
 \examples{
 \dontrun{
 # Load the election data
-data("election_data")
+data("election_data", package = "dhondt")
 # Explore the dataset
 head(election_data)
 }
