@@ -13,8 +13,6 @@
 #' @param seats_col The name of the column in df that contains the number of seats in each district.
 #' @param parties A vector of strings, each one the name of a column in df that contains the votes for a party.
 #' @param threshold The minimum vote share a party needs to be eligible for seats. Default is 0.
-#' @param assign_to_env Logical, whether to assign the resulting dataframe to a variable in the global environment. Default is FALSE.
-#' @param env_var_name The name of the variable in the global environment to which the resulting dataframe will be assigned, if assign_to_env is TRUE.
 #'
 #' @return A list where the first item is a named vector with the total seats for each party, and the second item is the dataframe
 #' with the number of seats each party won in each district (including a total row), optionally assigned to a variable in the global environment.
