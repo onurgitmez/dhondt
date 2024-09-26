@@ -43,10 +43,9 @@ library(dhondt)
 # 'party1', 'party2' - columns with the number of votes each party received in each district
 
 # The 'threshold' argument specifies the national threshold required for a party to be eligible for seats. 
-# The resulting dataframe can optionally be assigned to a global environment variable, 'election_results'.
 
 
-election_results <- simulate_election(data, "district", "seats", c("party1", "party2"), threshold = 0.1, assign_to_env = TRUE, env_var_name = "election_results")
+election_results <- simulate_election(data, "district", "seats", c("party1", "party2"), threshold = 0.1)
 
 ```
 
@@ -62,7 +61,7 @@ The `dhondt` package currently has one main function, `simulate_election`.
 
 ```r
 
-simulate_election(df, district_col, seats_col, parties, threshold = 0, assign_to_env = FALSE, env_var_name = "df_with_seats")
+simulate_election(df, district_col, seats_col, parties, threshold = 0)
 
 ```
 
@@ -73,18 +72,16 @@ simulate_election(df, district_col, seats_col, parties, threshold = 0, assign_to
 - `seats_col`: The name of the column in df that contains the number of seats in each district.
 - `parties`: A vector of strings, each one the name of a column in df that contains the votes for a party.
 - `threshold`: The minimum vote share a party needs to be eligible for seats. Default is 0.
-- `assign_to_env`: Logical, whether to assign the resulting dataframe to a variable in the global environment. Default is FALSE.
-- `env_var_name`: The name of the variable in the global environment to which the resulting dataframe will be assigned, if assign_to_env is TRUE.
+
 
 **Value:**
 
-A list where the first item is a named vector with the total seats for each party, and the second item is the dataframe with the number of seats each party won in each district (including a total row), optionally assigned to a variable in the global environment.
+A list where the first item is a named vector with the total seats for each party, and the second item is the dataframe with the number of seats each party won in each district (including a total row).
 
 ## Features
 
 - Simulates an election using the D'Hondt method.
 - Computes the number of seats each party won in the election, given a dataframe with election data and parameters.
-- The resulting dataframe can optionally be assigned to a variable in the global environment.
 
 ## Example Dataset
 
@@ -120,7 +117,7 @@ If you are using the dataset shipped with the package an example usage will be l
 
 # In this case, AKP's, MHP's, CHP's, IYIP's, and HDP's vote shares are used to calculate the seat distribution without an electoral threshold. The results aren't saved to the environment.
 
-simulate_election(election_data, "DistrictName", "NumberofSeats", c("AkpVote", "MhpVote", "ChpVote", "IyipVote", "HdpVote"), threshold = 0, assign_to_env = FALSE)
+simulate_election(election_data, "DistrictName", "NumberofSeats", c("AkpVote", "MhpVote", "ChpVote", "IyipVote", "HdpVote"), threshold = 0)
 ```
 
 
