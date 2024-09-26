@@ -31,45 +31,45 @@
 #' }
 simulate_election <- function(df, district_col, seats_col, parties, threshold = 0, assign_to_env = FALSE, env_var_name = "df_with_seats") {
   
-  # 1. Calculate total votes for each party across all districts (i.e., national total for each party)
+ 
   total_votes_all_parties <- colSums(df[parties], na.rm = TRUE)
   
-  # 2. Calculate the total votes across all parties (i.e., total votes in the entire country)
+  
   total_votes_in_country <- sum(total_votes_all_parties)
   
-  # 3. Calculate the national vote share for each party
+ 
   national_vote_share <- total_votes_all_parties / total_votes_in_country
   
-  # 4. Filter parties that meet the threshold based on their national vote share
+  
   eligible_parties <- names(national_vote_share)[national_vote_share > threshold]
   
-  # If no parties meet the threshold at the national level, stop with an error message
+  
   if (length(eligible_parties) == 0) {
     stop("No parties meet the national threshold.")
   }
   
-  # Create a copy of the dataframe to store seat allocation
+  
   df_with_seats <- df
   df_with_seats[, paste0(eligible_parties, '_seats')] <- 0
 
-  # 5. Loop through each district and apply the D'Hondt method
+  
   for (district in unique(df[[district_col]])) {
     district_data <- df[df[[district_col]] == district,]
     
-    # Extract the votes for the eligible parties in the current district
+    
     votes <- district_data[eligible_parties]
     seats <- district_data[[seats_col]]
 
-    # Skip this district if there are no seats or if seats are NA
+    
     if (is.na(seats) || seats <= 0) {
       next
     }
 
-    # Initialize seat results for eligible parties in the current district
+    
     parties_eligible <- names(votes)
     results <- setNames(rep(0, length(parties_eligible)), parties_eligible)
 
-    # Allocate seats using the D'Hondt method
+    
     for (i in 1:seats) {
       max_votes <- 0
       winner <- ''
@@ -82,20 +82,20 @@ simulate_election <- function(df, district_col, seats_col, parties, threshold = 
           winner <- party
         }
       }
-      # Assign the seat to the winning party
+      
       if (winner != '') {
         results[[winner]] <- results[[winner]] + 1
       }
     }
 
-    # Store the results for the current district
+    
     df_with_seats[df_with_seats[[district_col]] == district, paste0(eligible_parties, '_seats')] <- as.list(results)
   }
 
-  # Convert seat columns to numeric
+  
   df_with_seats[, paste0(eligible_parties, '_seats')] <- apply(df_with_seats[, paste0(eligible_parties, '_seats')], 2, as.numeric)
 
-  # 6. Add a total row to summarize the results
+  
   total_row <- setNames(rep(NA, ncol(df_with_seats)), names(df_with_seats))
   total_row[district_col] <- "Total"
   total_row[seats_col] <- sum(df_with_seats[[seats_col]])
@@ -104,7 +104,7 @@ simulate_election <- function(df, district_col, seats_col, parties, threshold = 
 
   df_with_seats <- rbind(df_with_seats, total_row)
 
-  # 7. Create a results list with total seats for each party
+  
   total_seats <- total_row[paste0(eligible_parties, '_seats')]
 
   results <- list()
@@ -112,7 +112,7 @@ simulate_election <- function(df, district_col, seats_col, parties, threshold = 
     results[[party]] <- total_seats[[paste0(party, '_seats')]]
   }
 
-  # 8. Optionally assign the result dataframe to a global environment variable
+  
   if (assign_to_env) {
     assign(env_var_name, df_with_seats, envir = .GlobalEnv)
   }
