@@ -1,7 +1,7 @@
 Package: dhondt
 Type: Package
 Title: D'Hondt Simulator for R
-Version: 0.1.4
+Version: 1.0.0
 Author: Ali Onur Gitmez
 Maintainer: The package maintainer <alionur@gitmez.com>
 Description: A D'Hondt election simulator which calculates number of seats won by political parties by district and in total
