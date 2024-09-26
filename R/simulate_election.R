@@ -31,16 +31,19 @@
 #' }
 simulate_election <- function(df, district_col, seats_col, parties, threshold = 0, assign_to_env = FALSE, env_var_name = "df_with_seats") {
   
-  # Calculate total votes for each party across all districts
-  total_votes <- colSums(df[parties], na.rm = TRUE)
   
-  # Calculate the share of total votes for each party
-  vote_share <- total_votes / sum(total_votes)
+  total_votes_all_parties <- colSums(df[parties], na.rm = TRUE)
   
-  # Filter out parties that do not meet the threshold based on total vote share
-  eligible_parties <- names(vote_share)[vote_share >= threshold]
+ 
+  total_votes_in_country <- sum(total_votes_all_parties)
   
-  # If no parties meet the threshold, return a message
+  
+  national_vote_share <- total_votes_all_parties / total_votes_in_country
+  
+ 
+  eligible_parties <- names(national_vote_share)[national_vote_share > threshold]
+  
+  
   if (length(eligible_parties) == 0) {
     stop("No parties meet the threshold.")
   }
@@ -48,13 +51,15 @@ simulate_election <- function(df, district_col, seats_col, parties, threshold = 
   df_with_seats <- df
   df_with_seats[, paste0(eligible_parties, '_seats')] <- 0
 
+  
   for (district in unique(df[[district_col]])) {
     district_data <- df[df[[district_col]] == district,]
     
-    # Only consider eligible parties for seat allocation in each district
+   
     votes <- district_data[eligible_parties]
     seats <- district_data[[seats_col]]
 
+    # Skip if there are no seats or if seats are NA
     if (is.na(seats) || seats <= 0) {
       next
     }
@@ -62,6 +67,7 @@ simulate_election <- function(df, district_col, seats_col, parties, threshold = 
     parties_eligible <- names(votes)
     results <- setNames(rep(0, length(parties_eligible)), parties_eligible)
 
+    
     for (i in 1:seats) {
       max_votes <- 0
       winner <- ''
@@ -84,7 +90,7 @@ simulate_election <- function(df, district_col, seats_col, parties, threshold = 
 
   df_with_seats[, paste0(eligible_parties, '_seats')] <- apply(df_with_seats[, paste0(eligible_parties, '_seats')], 2, as.numeric)
 
-  # Add total row
+  
   total_row <- setNames(rep(NA, ncol(df_with_seats)), names(df_with_seats))
   total_row[district_col] <- "Total"
   total_row[seats_col] <- sum(df_with_seats[[seats_col]])
@@ -93,6 +99,7 @@ simulate_election <- function(df, district_col, seats_col, parties, threshold = 
 
   df_with_seats <- rbind(df_with_seats, total_row)
 
+  
   total_seats <- total_row[paste0(eligible_parties, '_seats')]
 
   results <- list()
@@ -100,11 +107,13 @@ simulate_election <- function(df, district_col, seats_col, parties, threshold = 
     results[[party]] <- total_seats[[paste0(party, '_seats')]]
   }
 
+ 
   if (assign_to_env) {
     assign(env_var_name, df_with_seats, envir = .GlobalEnv)
   }
 
   return(list("totals" = results, "df_with_seats" = df_with_seats))
 }
+
 
 
