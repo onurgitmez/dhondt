@@ -33,14 +33,19 @@ simulate_election <- function(df, district_col, seats_col, parties, threshold = 
   total_votes <- colSums(df[parties], na.rm = TRUE)
   vote_share <- total_votes / sum(total_votes)
 
+  # Filter out parties that do not meet the threshold
   eligible_parties <- names(vote_share)[vote_share >= threshold]
+  
+  # If no parties meet the threshold, return a message
+  if (length(eligible_parties) == 0) {
+    stop("No parties meet the threshold.")
+  }
 
   df_with_seats <- df
-  df_with_seats[, paste0(parties, '_seats')] <- 0
+  df_with_seats[, paste0(eligible_parties, '_seats')] <- 0
 
   for (district in unique(df[[district_col]])) {
     district_data <- df[df[[district_col]] == district,]
-
     votes <- district_data[eligible_parties]
     seats <- district_data[[seats_col]]
 
@@ -63,7 +68,9 @@ simulate_election <- function(df, district_col, seats_col, parties, threshold = 
           winner <- party
         }
       }
-      results[[winner]] <- results[[winner]] + 1
+      if (winner != '') {
+        results[[winner]] <- results[[winner]] + 1
+      }
     }
 
     df_with_seats[df_with_seats[[district_col]] == district, paste0(eligible_parties, '_seats')] <- as.list(results)
@@ -71,21 +78,21 @@ simulate_election <- function(df, district_col, seats_col, parties, threshold = 
 
   df_with_seats[, paste0(eligible_parties, '_seats')] <- apply(df_with_seats[, paste0(eligible_parties, '_seats')], 2, as.numeric)
 
+  # Add total row
   total_row <- setNames(rep(NA, ncol(df_with_seats)), names(df_with_seats))
   total_row[district_col] <- "Total"
   total_row[seats_col] <- sum(df_with_seats[[seats_col]])
-  total_row[parties] <- colSums(df_with_seats[parties], na.rm = TRUE)
-  total_row[paste0(parties, '_seats')] <- colSums(df_with_seats[, paste0(parties, '_seats')], na.rm = TRUE)
+  total_row[eligible_parties] <- colSums(df_with_seats[eligible_parties], na.rm = TRUE)
+  total_row[paste0(eligible_parties, '_seats')] <- colSums(df_with_seats[, paste0(eligible_parties, '_seats')], na.rm = TRUE)
 
   df_with_seats <- rbind(df_with_seats, total_row)
 
-  total_seats <- total_row[paste0(parties, '_seats')]
+  total_seats <- total_row[paste0(eligible_parties, '_seats')]
 
   results <- list()
-  for (party in parties) {
+  for (party in eligible_parties) {
     results[[party]] <- total_seats[[paste0(party, '_seats')]]
   }
-
 
   if (assign_to_env) {
     assign(env_var_name, df_with_seats, envir = .GlobalEnv)
