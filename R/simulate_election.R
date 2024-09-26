@@ -30,10 +30,14 @@
 #' simulate_election(data, "district", "seats", c("party1", "party2"), threshold = 0.1, assign_to_env = TRUE, env_var_name = "election_results")
 #' }
 simulate_election <- function(df, district_col, seats_col, parties, threshold = 0, assign_to_env = FALSE, env_var_name = "df_with_seats") {
+  
+  # Calculate total votes for each party across all districts
   total_votes <- colSums(df[parties], na.rm = TRUE)
+  
+  # Calculate the share of total votes for each party
   vote_share <- total_votes / sum(total_votes)
-
-  # Filter out parties that do not meet the threshold
+  
+  # Filter out parties that do not meet the threshold based on total vote share
   eligible_parties <- names(vote_share)[vote_share >= threshold]
   
   # If no parties meet the threshold, return a message
@@ -46,6 +50,8 @@ simulate_election <- function(df, district_col, seats_col, parties, threshold = 
 
   for (district in unique(df[[district_col]])) {
     district_data <- df[df[[district_col]] == district,]
+    
+    # Only consider eligible parties for seat allocation in each district
     votes <- district_data[eligible_parties]
     seats <- district_data[[seats_col]]
 
@@ -100,4 +106,5 @@ simulate_election <- function(df, district_col, seats_col, parties, threshold = 
 
   return(list("totals" = results, "df_with_seats" = df_with_seats))
 }
+
 
