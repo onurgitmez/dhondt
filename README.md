@@ -119,8 +119,12 @@ If you are using the dataset shipped with the package an example usage will be l
 
 simulate_election(election_data, "DistrictName", "NumberofSeats", c("AkpVote", "MhpVote", "ChpVote", "IyipVote", "HdpVote"), threshold = 0)
 ```
+After you run the code the output will only show the totals for each party. If you would like a dataframe to see the seat distributions in each district you can use return value
 
-
+```r
+results <- simulate_election(election_data, "DistrictName", "NumberofSeats", c("AkpVote", "MhpVote", "ChpVote", "IyipVote", "HdpVote"), threshold = 0)
+df_with_seats <- results$df_with_seats
+```
 
 ## Contributing
 
