@@ -29,96 +29,67 @@
 #' # The resulting dataframe will be assigned to the variable 'election_results' in the global environment.
 #' simulate_election(data, "district", "seats", c("party1", "party2"), threshold = 0.1, assign_to_env = TRUE, env_var_name = "election_results")
 #' }
-simulate_election <- function(df, district_col, seats_col, parties, threshold = 0, assign_to_env = FALSE, env_var_name = "df_with_seats") {
-  
- 
-  total_votes_all_parties <- colSums(df[parties], na.rm = TRUE)
-  
-  
-  total_votes_in_country <- sum(total_votes_all_parties)
-  
- 
-  national_vote_share <- total_votes_all_parties / total_votes_in_country
-  
-  
-  eligible_parties <- names(national_vote_share)[national_vote_share > threshold]
-  
-  
-  if (length(eligible_parties) == 0) {
-    stop("No parties meet the national threshold.")
+simulate_election <- function(df, district_col, seats_col, parties, threshold = 0) {
+  required_columns <- c(district_col, seats_col, parties)
+  missing_columns <- setdiff(required_columns, names(df))
+  if (length(missing_columns) > 0) {
+    stop(paste("The following required columns are missing from the dataframe:",
+               paste(missing_columns, collapse = ", ")))
   }
-  
-  
+  if (!is.numeric(df[[seats_col]])) {
+    stop(paste("The", seats_col, "column must be numeric."))
+  }
+  if (anyNA(df[[district_col]])) {
+    stop("The district column contains NA values.")
+  }
+  if (anyNA(df[[seats_col]])) {
+    warning("The seats column contains NA values.")
+  }
+  df[[seats_col]] <- as.numeric(df[[seats_col]])
+  total_votes_all_parties <- colSums(df[parties], na.rm = TRUE)
+  total_votes_in_country <- sum(total_votes_all_parties)
+  national_vote_share <- total_votes_all_parties / total_votes_in_country
+  eligible_parties <- names(national_vote_share)[national_vote_share > threshold]
+  if (length(eligible_parties) == 0) {
+    stop(paste("No parties meet the national threshold of", threshold * 100, "%"))
+  }
   df_with_seats <- df
-  df_with_seats[, paste0(eligible_parties, '_seats')] <- 0
-
-  
-  for (district in unique(df[[district_col]])) {
-    district_data <- df[df[[district_col]] == district,]
-    
-    
-    votes <- district_data[eligible_parties]
+  seat_cols <- paste0(eligible_parties, '_seats')
+  df_with_seats[seat_cols] <- 0
+  districts <- unique(df[[district_col]])
+  for (district in districts) {
+    district_data <- df_with_seats[df_with_seats[[district_col]] == district, ]
     seats <- district_data[[seats_col]]
-
-    
     if (is.na(seats) || seats <= 0) {
       next
     }
-
-    
-    parties_eligible <- names(votes)
-    results <- setNames(rep(0, length(parties_eligible)), parties_eligible)
-
-    
-    for (i in 1:seats) {
-      max_votes <- 0
-      winner <- ''
-      for (party in parties_eligible) {
-        party_votes <- votes[[party]]
-        party_seats <- results[party]
-        quotient <- party_votes / (party_seats + 1)
-        if (quotient > max_votes) {
-          max_votes <- quotient
-          winner <- party
-        }
-      }
-      
-      if (winner != '') {
-        results[[winner]] <- results[[winner]] + 1
-      }
+    votes <- district_data[eligible_parties]
+    votes_vector <- as.numeric(votes)
+    names(votes_vector) <- eligible_parties
+    if (anyNA(votes_vector)) {
+      warning(paste("NA values found in votes for district", district, "- skipping this district"))
+      next
     }
-
-    
-    df_with_seats[df_with_seats[[district_col]] == district, paste0(eligible_parties, '_seats')] <- as.list(results)
+    seat_allocations <- integer(length(votes_vector))
+    names(seat_allocations) <- eligible_parties
+    party_votes <- votes_vector
+    for (i in seq_len(seats)) {
+      current_quotients <- party_votes / (seat_allocations + 1)
+      winner <- which.max(current_quotients)
+      seat_allocations[winner] <- seat_allocations[winner] + 1
+    }
+    df_with_seats[df_with_seats[[district_col]] == district, seat_cols] <- as.list(seat_allocations)
   }
-
-  
-  df_with_seats[, paste0(eligible_parties, '_seats')] <- apply(df_with_seats[, paste0(eligible_parties, '_seats')], 2, as.numeric)
-
-  
-  total_row <- setNames(rep(NA, ncol(df_with_seats)), names(df_with_seats))
-  total_row[district_col] <- "Total"
-  total_row[seats_col] <- sum(df_with_seats[[seats_col]])
-  total_row[eligible_parties] <- colSums(df_with_seats[eligible_parties], na.rm = TRUE)
-  total_row[paste0(eligible_parties, '_seats')] <- colSums(df_with_seats[, paste0(eligible_parties, '_seats')], na.rm = TRUE)
-
+  df_with_seats[seat_cols] <- lapply(df_with_seats[seat_cols], as.numeric)
+  total_row <- data.frame(matrix(NA, nrow = 1, ncol = ncol(df_with_seats)))
+  names(total_row) <- names(df_with_seats)
+  total_row[[district_col]] <- "Total"
+  total_row[[seats_col]] <- sum(df_with_seats[[seats_col]], na.rm = TRUE)
+  total_row[parties] <- colSums(df_with_seats[parties], na.rm = TRUE)
+  total_row[seat_cols] <- colSums(df_with_seats[seat_cols], na.rm = TRUE)
   df_with_seats <- rbind(df_with_seats, total_row)
-
-  
-  total_seats <- total_row[paste0(eligible_parties, '_seats')]
-
-  results <- list()
-  for (party in eligible_parties) {
-    results[[party]] <- total_seats[[paste0(party, '_seats')]]
-  }
-
-  
-  if (assign_to_env) {
-    assign(env_var_name, df_with_seats, envir = .GlobalEnv)
-  }
-
+  total_seats <- as.numeric(total_row[seat_cols])
+  names(total_seats) <- eligible_parties
+  results <- as.list(total_seats)
   return(list("totals" = results, "df_with_seats" = df_with_seats))
 }
-
-
-
