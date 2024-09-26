@@ -91,5 +91,5 @@ simulate_election <- function(df, district_col, seats_col, parties, threshold = 
   total_seats <- as.numeric(total_row[seat_cols])
   names(total_seats) <- eligible_parties
   results <- as.list(total_seats)
-  return(list("totals" = results, "df_with_seats" = df_with_seats))
+  return(results)
 }
