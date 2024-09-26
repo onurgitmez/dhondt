@@ -9,9 +9,7 @@ simulate_election(
   district_col,
   seats_col,
   parties,
-  threshold = 0,
-  assign_to_env = FALSE,
-  env_var_name = "df_with_seats"
+  threshold = 0
 )
 }
 \arguments{
@@ -27,9 +25,6 @@ for district names and a column for the number of seats in each district.}
 
 \item{threshold}{The minimum vote share a party needs to be eligible for seats. Default is 0.}
 
-\item{assign_to_env}{Logical, whether to assign the resulting dataframe to a variable in the global environment. Default is FALSE.}
-
-\item{env_var_name}{The name of the variable in the global environment to which the resulting dataframe will be assigned, if assign_to_env is TRUE.}
 }
 \value{
 A list where the first item is a named vector with the total seats for each party, and the second item is the dataframe
@@ -39,8 +34,7 @@ with the number of seats each party won in each district (including a total row)
 This function simulates an election using the D'Hondt method. Given a dataframe
 containing election data, the names of the columns containing district names,
 number of seats in each district, the votes for each party, and a threshold,
-it computes the number of seats each party won in the election. The resulting dataframe
-can optionally be assigned to a variable in the global environment.
+it computes the number of seats each party won in the election.
 }
 \examples{
 \dontrun{
